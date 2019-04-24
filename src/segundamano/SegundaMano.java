@@ -20,14 +20,19 @@ public class SegundaMano {
      */
     public static void main(String[] args) {
         // Conectar con la base de datos
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SegundaManoPU"); // Comprobar nombre de la PU
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SegundaManoPU");
         EntityManager em = emf.createEntityManager();
+        
+        Usuario usuarioNuevo = new Usuario(0, "Nombre", "Apellidos", "email@email.com","Direccion");
         
         // Transacción
         em.getTransaction().begin();
         // Añadir aquí las operaciones de modificación de la base de datos
-        em.getTransaction().commit();
         
+        em.persist(usuarioNuevo);
+        
+        em.getTransaction().commit();
+        // em.getTransaction().rollback();
         
         // Cerrar la conexión con la base de datos
         em.close(); 
