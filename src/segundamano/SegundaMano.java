@@ -6,6 +6,11 @@
 package segundamano;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -23,14 +28,32 @@ public class SegundaMano {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SegundaManoPU");
         EntityManager em = emf.createEntityManager();
         
-        Usuario usuarioNuevo = new Usuario(0, "Nombre", "Apellidos", "email@email.com","Direccion");
+        Usuario usuarioNuevo = new Usuario(0, "Juan", "Apellidos", "email@email.com","Direccion");
         
         // Transacción
         em.getTransaction().begin();
-        // Añadir aquí las operaciones de modificación de la base de datos
+        
         
         em.persist(usuarioNuevo);
+        String sDate = "03/06/1965";
+        try {
+            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
+            usuarioNuevo.setFechaNacimiento(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(SegundaMano.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
+        // Modificar/Eliminar objeto
+        System.out.println("Modificar objeto:");
+        Usuario usuarioId = em.find(Usuario.class, 3);
+        if(usuarioId != null) {
+            System.out.println(usuarioId.getId()+ ": " + usuarioId.getNombre());
+            usuarioId.setNombre("Alfredo");
+            //em.merge(usuarioId);
+            em.remove(usuarioId);
+        } else{
+            System.out.println("No hay ningun usuario con ese id");
+        }
         em.getTransaction().commit();
         // em.getTransaction().rollback();
         
@@ -41,6 +64,5 @@ public class SegundaMano {
             DriverManager.getConnection("jdbc:derby:/BD;shutdown=true"); 
         } catch (SQLException ex) { 
         }
-        }
-    
+    } 
 }
