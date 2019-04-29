@@ -28,7 +28,7 @@ public class SegundaMano {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SegundaManoPU");
         EntityManager em = emf.createEntityManager();
         
-        Usuario usuarioNuevo = new Usuario(0, "Juan", "Apellidos", "email@email.com","Direccion");
+        Usuario usuarioNuevo = new Usuario(0, "Maria", "Maria", "maria@email.com","Direccion");
         
         // Transacción
         em.getTransaction().begin();
@@ -45,12 +45,14 @@ public class SegundaMano {
         
         // Modificar/Eliminar objeto
         System.out.println("Modificar objeto:");
-        Usuario usuarioId = em.find(Usuario.class, 3);
+        Usuario usuarioId = em.find(Usuario.class, 1);
         if(usuarioId != null) {
             System.out.println(usuarioId.getId()+ ": " + usuarioId.getNombre());
-            usuarioId.setNombre("Alfredo");
-            //em.merge(usuarioId);
-            em.remove(usuarioId);
+            usuarioId.setTelefono("956464646");
+            usuarioId.setDireccion("Avenida España, 55");
+            //usuarioId.setFechaNacimiento();
+            em.merge(usuarioId);
+            //em.remove(usuarioId);
         } else{
             System.out.println("No hay ningun usuario con ese id");
         }

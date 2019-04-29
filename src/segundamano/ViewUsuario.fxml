@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="segundamano.ViewUsuarioController">
+   <children>
+      <VBox prefHeight="480.0" prefWidth="680.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TableView fx:id="tableView" prefHeight="279.0" prefWidth="600.0">
+              <columns>
+                  <TableColumn fx:id="columnId" prefWidth="30.0" text="id" />
+                <TableColumn fx:id="columnNombre" prefWidth="68.0" text="Nombre" />
+                <TableColumn fx:id="columnApellidos" prefWidth="85.0" text="Apellidos" />
+                  <TableColumn fx:id="columnEmail" prefWidth="93.0" text="Email" />
+                  <TableColumn fx:id="columnTelefono" prefWidth="85.0" text="Telefono" />
+                  <TableColumn fx:id="columnDireccion" minWidth="0.0" prefWidth="75.0" text="Direccion" />
+                  <TableColumn fx:id="columnFecha" minWidth="0.0" prefWidth="78.0" text="Fecha de Nacimiento" />
+                  <TableColumn fx:id="columnFoto" prefWidth="85.0" text="Foto" />
+              </columns>
+            </TableView>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
