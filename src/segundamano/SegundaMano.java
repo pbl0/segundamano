@@ -9,8 +9,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -28,34 +26,38 @@ public class SegundaMano {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("SegundaManoPU");
         EntityManager em = emf.createEntityManager();
         
-        Usuario usuarioNuevo = new Usuario(0, "Maria", "Maria", "maria@email.com","Direccion");
+        java.math.BigDecimal precio = new java.math.BigDecimal("150.50");
+        java.math.BigDecimal envio = new java.math.BigDecimal("7.00");
         
+        Producto productoNuevo = new Producto(0, "Televisor", "Panasonic", "Descripción", false, precio, envio, "foto");
+        Usuario usuario = em.find(Usuario.class, 5);
+        productoNuevo.setUsuario(usuario);
         // Transacción
         em.getTransaction().begin();
         
-        
-        em.persist(usuarioNuevo);
-        String sDate = "03/06/1965";
+        String sDate = "03/07/2018";
         try {
             Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
-            usuarioNuevo.setFechaNacimiento(date);
+            productoNuevo.setFecha(date);
         } catch (ParseException ex) {
-            Logger.getLogger(SegundaMano.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        em.persist(productoNuevo);
+        
+        
         // Modificar/Eliminar objeto
-        System.out.println("Modificar objeto:");
-        Usuario usuarioId = em.find(Usuario.class, 1);
-        if(usuarioId != null) {
-            System.out.println(usuarioId.getId()+ ": " + usuarioId.getNombre());
-            usuarioId.setTelefono("956464646");
-            usuarioId.setDireccion("Avenida España, 55");
-            //usuarioId.setFechaNacimiento();
-            em.merge(usuarioId);
-            //em.remove(usuarioId);
-        } else{
-            System.out.println("No hay ningun usuario con ese id");
-        }
+//        System.out.println("Modificar objeto:");
+//        Usuario usuarioId = em.find(Usuario.class, 1);
+//        if(usuarioId != null) {
+//            System.out.println(usuarioId.getId()+ ": " + usuarioId.getNombre());
+//            usuarioId.setTelefono("956464646");
+//            usuarioId.setDireccion("Avenida España, 55");
+//            //usuarioId.setFechaNacimiento();
+//            em.merge(usuarioId);
+//            //em.remove(usuarioId);
+//        } else{
+//            System.out.println("No hay ningun usuario con ese id");
+//        }
         em.getTransaction().commit();
         // em.getTransaction().rollback();
         

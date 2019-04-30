@@ -35,9 +35,9 @@ public class Main extends Application {
         em = emf.createEntityManager();
         
         //ViewUsuarioController viewUsuarioController = (ViewUsuarioController) fxmlLoader.getController();
-        ViewUsuarioController viewProductoController = (ViewProductoController) fxmlLoader.getController();  
+        ViewProductoController viewProductoController = (ViewProductoController) fxmlLoader.getController();  
         viewProductoController.setEntityManager(em);
-        //viewProductoController.cargarTodosUsuarios();
+        viewProductoController.cargarTodosProductos();
         
         Scene scene = new Scene(root, 640, 480);
         

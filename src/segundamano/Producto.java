@@ -39,7 +39,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Producto.findByNuevo", query = "SELECT p FROM Producto p WHERE p.nuevo = :nuevo")
     , @NamedQuery(name = "Producto.findByPrecio", query = "SELECT p FROM Producto p WHERE p.precio = :precio")
     , @NamedQuery(name = "Producto.findByEnvio", query = "SELECT p FROM Producto p WHERE p.envio = :envio")
-    , @NamedQuery(name = "Producto.findByEnvInternacional", query = "SELECT p FROM Producto p WHERE p.envInternacional = :envInternacional")
     , @NamedQuery(name = "Producto.findByFoto", query = "SELECT p FROM Producto p WHERE p.foto = :foto")
     , @NamedQuery(name = "Producto.findByFecha", query = "SELECT p FROM Producto p WHERE p.fecha = :fecha")})
 public class Producto implements Serializable {
@@ -70,9 +69,6 @@ public class Producto implements Serializable {
     @Column(name = "ENVIO")
     private BigDecimal envio;
     @Basic(optional = false)
-    @Column(name = "ENV_INTERNACIONAL")
-    private Boolean envInternacional;
-    @Basic(optional = false)
     @Column(name = "FOTO")
     private String foto;
     @Column(name = "FECHA")
@@ -89,7 +85,7 @@ public class Producto implements Serializable {
         this.id = id;
     }
 
-    public Producto(Integer id, String nombre, String fabricante, String descripcion, Boolean nuevo, BigDecimal precio, BigDecimal envio, Boolean envInternacional, String foto) {
+    public Producto(Integer id, String nombre, String fabricante, String descripcion, Boolean nuevo, BigDecimal precio, BigDecimal envio, String foto) {
         this.id = id;
         this.nombre = nombre;
         this.fabricante = fabricante;
@@ -97,7 +93,6 @@ public class Producto implements Serializable {
         this.nuevo = nuevo;
         this.precio = precio;
         this.envio = envio;
-        this.envInternacional = envInternacional;
         this.foto = foto;
     }
 
@@ -155,14 +150,6 @@ public class Producto implements Serializable {
 
     public void setEnvio(BigDecimal envio) {
         this.envio = envio;
-    }
-
-    public Boolean getEnvInternacional() {
-        return envInternacional;
-    }
-
-    public void setEnvInternacional(Boolean envInternacional) {
-        this.envInternacional = envInternacional;
     }
 
     public String getFoto() {
