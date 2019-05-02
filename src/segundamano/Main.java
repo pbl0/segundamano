@@ -35,11 +35,11 @@ public class Main extends Application {
         em = emf.createEntityManager();
         
         //ViewUsuarioController viewUsuarioController = (ViewUsuarioController) fxmlLoader.getController();
-        ViewProductoController viewProductoController = (ViewProductoController) fxmlLoader.getController();  
-        viewProductoController.setEntityManager(em);
-        viewProductoController.cargarTodosProductos();
+        ViewProductoController productoController = (ViewProductoController) fxmlLoader.getController();  
+        productoController.setEntityManager(em);
+        productoController.cargarTodosProductos();
         
-        Scene scene = new Scene(root, 640, 480);
+        Scene scene = new Scene(root, 720, 480);
         
 
         primaryStage.setTitle("Segunda Mano");

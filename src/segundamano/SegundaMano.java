@@ -32,6 +32,7 @@ public class SegundaMano {
         Producto productoNuevo = new Producto(0, "Televisor", "Panasonic", "Descripción", false, precio, envio, "foto");
         Usuario usuario = em.find(Usuario.class, 5);
         productoNuevo.setUsuario(usuario);
+        
         // Transacción
         em.getTransaction().begin();
         

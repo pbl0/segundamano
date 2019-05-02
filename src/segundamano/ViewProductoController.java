@@ -6,15 +6,18 @@
 package segundamano;
 
 import java.net.URL;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -27,11 +30,9 @@ import org.apache.derby.client.am.Decimal;
  */
 public class ViewProductoController implements Initializable {
     private EntityManager entityManager;
-    
+    private Producto productoSeleccionado;
     @FXML
-    private TableView<Producto> tableView;
-    @FXML
-    private TableColumn<Producto, Integer> columnId;
+    private TableView<Producto> tableViewProducto;
     @FXML
     private TableColumn<Producto, String> columnNombre;
     @FXML
@@ -47,16 +48,19 @@ public class ViewProductoController implements Initializable {
     @FXML
     private TableColumn<Producto, String> columnFoto;
     @FXML
-    private TableColumn<Producto, Date> columnFecha;
+    private TableColumn<Producto, String> columnFecha;
     @FXML
     private TableColumn<Producto, String> columnUsuario;
+    @FXML
+    private TextField textFieldNombre;
+    @FXML
+    private TextField textFieldFabrica;
 
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        columnId.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnFabrica.setCellValueFactory(new PropertyValueFactory<>("fabricante"));
         columnDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -64,7 +68,17 @@ public class ViewProductoController implements Initializable {
         columnPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         columnEnvio.setCellValueFactory(new PropertyValueFactory<>("envio"));
         columnFoto.setCellValueFactory(new PropertyValueFactory<>("foto"));
-        columnFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        // columnFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        columnFecha.setCellValueFactory(
+                cellData -> {
+                    SimpleStringProperty property = new SimpleStringProperty();
+                    
+                    if (cellData.getValue() != null) {
+                        String dateString = new SimpleDateFormat("dd/MM/yyyy").format(cellData.getValue().getFecha());
+                        property.setValue(dateString);
+                    }
+                    return property;
+                });
         columnUsuario.setCellValueFactory(
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -72,7 +86,19 @@ public class ViewProductoController implements Initializable {
                     property.setValue(cellData.getValue().getUsuario().getNombre());
                 }
                 return property;
-            });		
+            });	
+        tableViewProducto.getSelectionModel().selectedItemProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                productoSeleccionado = newValue;
+                if (productoSeleccionado != null) {
+                    textFieldNombre.setText(productoSeleccionado.getNombre());
+                    textFieldFabrica.setText(productoSeleccionado.getFabricante());
+                } else {
+                    textFieldNombre.setText("");
+                    textFieldFabrica.setText("");
+                }
+        });
+        
 
     }
     
@@ -83,7 +109,27 @@ public class ViewProductoController implements Initializable {
     public void cargarTodosProductos(){
         Query queryProductoTodos = entityManager.createNamedQuery("Producto.findAll");
         List<Producto> listProducto = queryProductoTodos.getResultList();
-        tableView.setItems(FXCollections.observableArrayList(listProducto));
+        tableViewProducto.setItems(FXCollections.observableArrayList(listProducto));
+    }
+
+    @FXML
+    private void onActionButtonGuardar(ActionEvent event) {
+        if (productoSeleccionado != null){
+            productoSeleccionado.setNombre(textFieldNombre.getText());
+            productoSeleccionado.setFabricante(textFieldFabrica.getText());
+            
+            entityManager.getTransaction().begin();
+            entityManager.merge(productoSeleccionado);
+            entityManager.getTransaction().commit();
+            
+            int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
+            tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
+            
+            TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
+            tableViewProducto.getFocusModel().focus(pos);
+            tableViewProducto.requestFocus();
+            
+        }
     }
     
 }
