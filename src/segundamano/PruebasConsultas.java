@@ -15,7 +15,7 @@ import javax.persistence.Query;
  *
  * @author PC15
  */
-public class ConsultaUsuario {
+public class PruebasConsultas {
         
     /**
      * @param args the command line arguments

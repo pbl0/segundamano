@@ -10,8 +10,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -27,21 +28,27 @@ public class Main extends Application {
     
     @Override
     public void start(Stage primaryStage) throws IOException {
-        //FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewUsuario.fxml"));
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewProducto.fxml"));
-        Parent root = fxmlLoader.load();
+        // Carga el view
         
+        //Parent root = fxmlLoader.load();
+        
+        StackPane rootMain = new StackPane();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewProducto.fxml"));
+        Pane rootProductosView = fxmlLoader.load();
+        rootMain.getChildren().add(rootProductosView);
+        // Carga del EntityManager
         emf = Persistence.createEntityManagerFactory("SegundaManoPU");
         em = emf.createEntityManager();
         
-        //ViewUsuarioController viewUsuarioController = (ViewUsuarioController) fxmlLoader.getController();
+        // Controlador del view
         ViewProductoController productoController = (ViewProductoController) fxmlLoader.getController();  
         productoController.setEntityManager(em);
+        
+        // Carga los productos en la tabla
         productoController.cargarTodosProductos();
         
-        Scene scene = new Scene(root, 720, 480);
-        
-
+        // Escena
+        Scene scene = new Scene(rootMain, 720, 480);
         primaryStage.setTitle("Segunda Mano");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -57,7 +64,6 @@ public class Main extends Application {
     }        
         
     }
-    
 
     /**
      * @param args the command line arguments
