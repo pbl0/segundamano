@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,6 +20,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
@@ -52,8 +56,8 @@ public class ViewProductoController implements Initializable {
     private TableColumn<Producto, Decimal> columnPrecio;
     @FXML
     private TableColumn<Producto, Decimal> columnEnvio;
-    @FXML
-    private TableColumn<Producto, String> columnFoto;
+    //@FXML
+    //private TableColumn<Producto, String> columnFoto;
     @FXML
     private TableColumn<Producto, String> columnFecha;
     @FXML
@@ -76,7 +80,7 @@ public class ViewProductoController implements Initializable {
         columnNuevo.setCellValueFactory(new PropertyValueFactory<>("nuevo"));
         columnPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         columnEnvio.setCellValueFactory(new PropertyValueFactory<>("envio"));
-        columnFoto.setCellValueFactory(new PropertyValueFactory<>("foto"));
+        //columnFoto.setCellValueFactory(new PropertyValueFactory<>("foto"));
         columnFecha.setCellValueFactory(
                 cellData -> {
                     SimpleStringProperty property = new SimpleStringProperty();
@@ -199,6 +203,29 @@ public class ViewProductoController implements Initializable {
 
     @FXML
     private void onActionButtonSuprimir(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar");
+        alert.setHeaderText("¿Desea suprimir el siguiente registro?");
+        alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK){
+            // Acciones a realizar si el usuario acepta
+            entityManager.getTransaction().begin();
+            entityManager.merge(productoSeleccionado);
+            entityManager.remove(productoSeleccionado);
+            entityManager.getTransaction().commit();
+            
+            tableViewProducto.getItems().remove(productoSeleccionado);
+
+            tableViewProducto.getFocusModel().focus(null);
+            tableViewProducto.requestFocus();
+        } else {
+            // Acciones a realizar si el usuario cancela
+            int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
+            tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
+            TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
+            tableViewProducto.getFocusModel().focus(pos);
+            tableViewProducto.requestFocus();    
+        }
     }
-    
 }

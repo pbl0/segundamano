@@ -5,28 +5,47 @@
  */
 package segundamano;
 
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.util.StringConverter;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.RollbackException;
 
 /**
  * FXML Controller class
@@ -50,7 +69,7 @@ public class ProductoDetalleViewController implements Initializable {
     @FXML
     private DatePicker datePickerFecha;
     @FXML
-    private ComboBox<?> comboBoxVendedor;
+    private ComboBox<Usuario> comboBoxVendedor;
     @FXML
     private ImageView imageViewFoto;
     @FXML
@@ -61,7 +80,8 @@ public class ProductoDetalleViewController implements Initializable {
     private Producto producto;
     private EntityManager entityManager;
     private boolean nuevoProducto;
-
+    
+    public static final String CARPETA_FOTOS = "Fotos";
     /**
      * Initializes the controller class.
      */
@@ -78,13 +98,32 @@ public class ProductoDetalleViewController implements Initializable {
     
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {
+        boolean errorFormato = false;
         int numFilaSeleccionada;
+        
         this.producto.setNombre(textFieldNombre.getText());
         this.producto.setFabricante(textFieldFabrica.getText());
-        java.math.BigDecimal precio = new java.math.BigDecimal(textFieldPrecio.getText());
-        this.producto.setPrecio(precio);
-        java.math.BigDecimal envio = new java.math.BigDecimal(textFieldEnvio.getText());
-        this.producto.setEnvio(envio);
+        if (!textFieldPrecio.getText().isEmpty()){
+            try {
+                this.producto.setPrecio(BigDecimal.valueOf(Double.valueOf(textFieldPrecio.getText())));
+            } catch (NumberFormatException e) {
+                errorFormato = true;
+            Alert alert = new Alert(AlertType.INFORMATION, "Precio no válido");
+            alert.showAndWait();
+            textFieldPrecio.requestFocus();
+            }
+        }
+        if (!textFieldEnvio.getText().isEmpty()){
+            try {
+                this.producto.setEnvio(BigDecimal.valueOf(Double.valueOf(textFieldEnvio.getText())));
+            } catch (NumberFormatException e) {
+                errorFormato = true;
+            Alert alert = new Alert(AlertType.INFORMATION, "Coste de envio no válido");
+            alert.showAndWait();
+            textFieldEnvio.requestFocus();
+            }
+        }
+        
         this.producto.setDescripcion(textAreaDesc.getText());
         this.producto.setNuevo(checkBoxNuevo.selectedProperty().get());
         
@@ -98,30 +137,47 @@ public class ProductoDetalleViewController implements Initializable {
             producto.setFecha(null);
         }
         
-        
-        
-        if(nuevoProducto){
-            entityManager.persist(producto);
-            
+        if(comboBoxVendedor.getValue() != null){
+            producto.setUsuario(comboBoxVendedor.getValue());
         } else {
-            entityManager.merge(producto);
+            Alert alert = new Alert(AlertType.INFORMATION, "Debe indicar un vendedor");
+            alert.showAndWait();
+            errorFormato = true;
         }
-        entityManager.getTransaction().commit();
         
-        this.volverLista();
         
-        if(nuevoProducto) {
-            tableViewPrevio.getItems().add(producto);
-            numFilaSeleccionada = tableViewPrevio.getItems().size() - 1;
-            tableViewPrevio.getSelectionModel().select(numFilaSeleccionada);
-            tableViewPrevio.scrollTo(numFilaSeleccionada);
-        } else {
-            numFilaSeleccionada = tableViewPrevio.getSelectionModel().getSelectedIndex();
-            tableViewPrevio.getItems().set(numFilaSeleccionada, producto); 
+        //DB
+        if(!errorFormato){
+            try {
+                if(nuevoProducto){
+                    entityManager.persist(producto);
+                } else {
+                    entityManager.merge(producto);
+                }
+                entityManager.getTransaction().commit();
+                
+                this.volverLista();
+                
+                if(nuevoProducto) {
+                    tableViewPrevio.getItems().add(producto);
+                    numFilaSeleccionada = tableViewPrevio.getItems().size() - 1;
+                    tableViewPrevio.getSelectionModel().select(numFilaSeleccionada);
+                    tableViewPrevio.scrollTo(numFilaSeleccionada);
+                } else {
+                    numFilaSeleccionada = tableViewPrevio.getSelectionModel().getSelectedIndex();
+                    tableViewPrevio.getItems().set(numFilaSeleccionada, producto); 
+                }
+                TablePosition pos = new TablePosition(tableViewPrevio, numFilaSeleccionada, null);
+                tableViewPrevio.getFocusModel().focus(pos);
+                tableViewPrevio.requestFocus();
+            } catch (RollbackException ex) {
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setHeaderText("No se han podido guardar los cambios. " + "Compruebe que los datos cumplen los requisitos");
+                alert.setContentText(ex.getLocalizedMessage());
+                alert.showAndWait();
+            }
         }
-        TablePosition pos = new TablePosition(tableViewPrevio, numFilaSeleccionada, null);
-        tableViewPrevio.getFocusModel().focus(pos);
-        tableViewPrevio.requestFocus();
+        
     
     }
 
@@ -135,6 +191,64 @@ public class ProductoDetalleViewController implements Initializable {
         TablePosition pos = new TablePosition(tableViewPrevio, numFilaSeleccionada, null);
         tableViewPrevio.getFocusModel().focus(pos);
         tableViewPrevio.requestFocus();
+    }
+    
+    @FXML
+    private void onActionButtonExaminar(ActionEvent event) {
+        File carpetaFotos = new File(CARPETA_FOTOS);
+        if(!carpetaFotos.exists()) {
+            carpetaFotos.mkdir();
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar imagen");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Imágenes (jpg, png)", "*.jpg", "*.png"),
+                new FileChooser.ExtensionFilter("Todos los archivos", "*.*")
+            );
+        File file = fileChooser.showOpenDialog(rootProductosDetalleView.getScene().getWindow());
+        if(file != null) {
+            try {
+                Files.copy(file.toPath(), new File(CARPETA_FOTOS + "/"+file.getName()).toPath());
+                producto.setFoto(file.getName());
+                Image image = new Image(file.toURI().toString());
+                imageViewFoto.setImage(image);
+            } catch (FileAlreadyExistsException ex) {
+                Alert alert = new Alert(AlertType.WARNING, "Nombre de archivo duplicado");
+                alert.showAndWait();
+            } catch (IOException ex) {
+                Alert alert = new Alert(AlertType.WARNING, "No se ha podido guardar la imagen");
+                alert.showAndWait();
+            }
+        }
+    }
+    
+    @FXML
+    private void onActionSuprimirFoto(ActionEvent event) {
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmar supresión de imagen");
+        alert.setHeaderText("¿Desea SUPRIMIR el archivo asociado a la imagen, \n"
+                + "quitar la foto pero MANTENER el archivo, \no CANCELAR la operación?");
+        alert.setContentText("Elija la opción deseada:");
+
+        ButtonType buttonTypeEliminar = new ButtonType("Suprimir");
+        ButtonType buttonTypeMantener = new ButtonType("Mantener");
+        ButtonType buttonTypeCancel = new ButtonType("Cancelar", ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(buttonTypeEliminar, buttonTypeMantener, buttonTypeCancel);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == buttonTypeEliminar){
+            String imageFileName = producto.getFoto();
+            File file = new File(CARPETA_FOTOS + "/" + imageFileName);
+            if(file.exists()) {
+                file.delete();
+            }
+            producto.setFoto(null);
+            imageViewFoto.setImage(null);
+        } else if (result.get() == buttonTypeMantener) {
+            producto.setFoto(null);
+            imageViewFoto.setImage(null);
+        } 
     }
     
     public void setRootProductosView(Pane rootProductosView) {
@@ -163,7 +277,60 @@ public class ProductoDetalleViewController implements Initializable {
         textFieldEnvio.setText(producto.getEnvio().toString());
         textAreaDesc.setText(producto.getDescripcion());
         checkBoxNuevo.setSelected(producto.getNuevo());
-        datePickerFecha.setValue(producto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        if(producto.getFecha() != null){
+            datePickerFecha.setValue(producto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        }
+        
+        
+        
+        //Consulta usuarios
+        Query queryUsuarioFindAll = entityManager.createNamedQuery("Usuario.findAll");
+        List<Usuario> listUsuario = queryUsuarioFindAll.getResultList();
+        comboBoxVendedor.setItems(FXCollections.observableList(listUsuario));
+        
+        if (producto.getUsuario()!= null) {
+            comboBoxVendedor.setValue(producto.getUsuario());
+        }
+  
+        comboBoxVendedor.setCellFactory((ListView<Usuario> l) -> new ListCell<Usuario>() {
+            @Override
+            protected void updateItem(Usuario usuario, boolean empty) {
+                super.updateItem(usuario, empty);
+                if (usuario == null || empty) {
+                    setText("");
+                } else {
+                    setText(usuario.getNombre());
+                }
+            }   
+        });
+        // Formato para el valor mostrado actualmente como seleccionado
+        comboBoxVendedor.setConverter(new StringConverter<Usuario>() {
+            @Override
+            public String toString(Usuario usuario) {
+                if (usuario == null) {
+                    return null;
+                } else {
+                    return usuario.getNombre();
+                }
+            }
+            @Override
+            public Usuario fromString(String string) {
+                return null;
+            }
+
+        });
+        // Foto:
+        if (producto.getFoto() != null){
+            String imageFileName = producto.getFoto();
+            File file = new File(CARPETA_FOTOS + "/" + imageFileName);
+             if (file.exists()) {
+                Image image = new Image(file.toURI().toString());
+                imageViewFoto.setImage(image);
+            } else {
+                Alert alert = new Alert(AlertType.INFORMATION, "No se encuentra la imagen");
+                alert.showAndWait();
+            }
+        }
     }
-    
 }
+
