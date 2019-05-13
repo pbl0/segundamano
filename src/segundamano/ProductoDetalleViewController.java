@@ -90,12 +90,14 @@ public class ProductoDetalleViewController implements Initializable {
         // TODO
     }    
     
+    //Metodo para volver a la lista de productos.
     private void volverLista(){
         StackPane rootMain = (StackPane)rootProductosDetalleView.getScene().getRoot();
         rootMain.getChildren().remove(rootProductosDetalleView);
         rootProductosView.setVisible(true);
     }
     
+    //boton de guardar
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {
         boolean errorFormato = false;
@@ -145,7 +147,6 @@ public class ProductoDetalleViewController implements Initializable {
             errorFormato = true;
         }
         
-        
         //DB
         if(!errorFormato){
             try {
@@ -172,13 +173,14 @@ public class ProductoDetalleViewController implements Initializable {
                 tableViewPrevio.requestFocus();
             } catch (RollbackException ex) {
                 Alert alert = new Alert(AlertType.INFORMATION);
-                alert.setHeaderText("No se han podido guardar los cambios. " + "Compruebe que los datos cumplen los requisitos");
+                alert.setHeaderText("No se han podido guardar los cambios. " + 
+                        "Compruebe que los datos cumplen los requisitos");
                 alert.setContentText(ex.getLocalizedMessage());
                 alert.showAndWait();
+                //recomenzamos transaction
+                entityManager.getTransaction().begin();
             }
         }
-        
-    
     }
 
     @FXML
@@ -273,10 +275,22 @@ public class ProductoDetalleViewController implements Initializable {
     public void mostrarDatos() {
         textFieldNombre.setText(producto.getNombre());
         textFieldFabrica.setText(producto.getFabricante());
-        textFieldPrecio.setText(producto.getPrecio().toString());
-        textFieldEnvio.setText(producto.getEnvio().toString());
+        if (producto.getPrecio() != null) {
+            textFieldPrecio.setText(producto.getPrecio().toString());
+        }
+        
+        if (producto.getEnvio() != null) {
+            textFieldEnvio.setText(producto.getEnvio().toString());
+        }
+        
+        
         textAreaDesc.setText(producto.getDescripcion());
-        checkBoxNuevo.setSelected(producto.getNuevo());
+        
+        if (producto.getNuevo() != null){
+            checkBoxNuevo.setSelected(producto.getNuevo());
+        }
+        
+        
         if(producto.getFecha() != null){
             datePickerFecha.setValue(producto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }

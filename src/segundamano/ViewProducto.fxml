@@ -26,14 +26,14 @@
             </HBox>
             <TableView fx:id="tableViewProducto" prefHeight="279.0" prefWidth="600.0">
               <columns>
-                <TableColumn fx:id="columnNombre" prefWidth="83.0" text="Producto" />
-                <TableColumn fx:id="columnFabrica" prefWidth="94.0" text="Fabricante" />
-                  <TableColumn fx:id="columnDesc" prefWidth="128.0" text="Descripción" />
-                  <TableColumn fx:id="columnNuevo" prefWidth="53.0" text="Nuevo" />
-                  <TableColumn fx:id="columnPrecio" minWidth="0.0" prefWidth="67.0" text="Precio" />
+                <TableColumn fx:id="columnNombre" prefWidth="71.0" text="Producto" />
+                <TableColumn fx:id="columnFabrica" prefWidth="92.0" text="Fabricante" />
+                  <TableColumn fx:id="columnDesc" prefWidth="109.0" text="Descripción" />
+                  <TableColumn fx:id="columnNuevo" prefWidth="78.0" text="Nuevo" />
+                  <TableColumn fx:id="columnPrecio" minWidth="0.0" prefWidth="75.0" text="Precio" />
                   <TableColumn fx:id="columnEnvio" minWidth="0.0" prefWidth="62.0" text="Envio" />
-                  <TableColumn fx:id="columnFecha" prefWidth="94.0" text="Fecha" />
-                  <TableColumn fx:id="columnUsuario" prefWidth="98.0" text="Vendedor" />
+                  <TableColumn fx:id="columnFecha" prefWidth="77.0" text="Fecha" />
+                  <TableColumn fx:id="columnUsuario" prefWidth="94.0" text="Vendedor" />
               </columns>
             </TableView>
             <GridPane hgap="10.0" vgap="5.0">
@@ -60,4 +60,7 @@
          </padding>
       </VBox>
    </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </AnchorPane>

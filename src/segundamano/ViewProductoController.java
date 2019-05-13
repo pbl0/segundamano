@@ -51,7 +51,7 @@ public class ViewProductoController implements Initializable {
     @FXML
     private TableColumn<Producto, String> columnDesc;
     @FXML
-    private TableColumn<Producto, Boolean> columnNuevo;
+    private TableColumn<Producto, String> columnNuevo;
     @FXML
     private TableColumn<Producto, Decimal> columnPrecio;
     @FXML
@@ -77,20 +77,32 @@ public class ViewProductoController implements Initializable {
         columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnFabrica.setCellValueFactory(new PropertyValueFactory<>("fabricante"));
         columnDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        columnNuevo.setCellValueFactory(new PropertyValueFactory<>("nuevo"));
+        //columnNuevo.setCellValueFactory(new PropertyValueFactory<>("nuevo"));
         columnPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         columnEnvio.setCellValueFactory(new PropertyValueFactory<>("envio"));
-        //columnFoto.setCellValueFactory(new PropertyValueFactory<>("foto"));
+        columnNuevo.setCellValueFactory(
+            cellData -> {
+                SimpleStringProperty property = new SimpleStringProperty();
+                
+                if (cellData.getValue().getNuevo()){
+                    property.setValue("\u2713");
+                } else{
+                    property.setValue("\u2717");
+                }
+                return property;
+            }
+        );
+        
         columnFecha.setCellValueFactory(
-                cellData -> {
-                    SimpleStringProperty property = new SimpleStringProperty();
-                    
-                    if (cellData.getValue() != null) {
-                        String dateString = new SimpleDateFormat("dd/MM/yyyy").format(cellData.getValue().getFecha());
-                        property.setValue(dateString);
-                    }
-                    return property;
-                });
+            cellData -> {
+                SimpleStringProperty property = new SimpleStringProperty();
+
+                if (cellData.getValue() != null) {
+                    String dateString = new SimpleDateFormat("dd/MM/yyyy").format(cellData.getValue().getFecha());
+                    property.setValue(dateString);
+                }
+                return property;
+            });
         columnUsuario.setCellValueFactory(
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -148,7 +160,14 @@ public class ViewProductoController implements Initializable {
         try {
             // Cargar la vista de detalle
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductoDetalleView.fxml"));
-            Parent rootDetalleView = fxmlLoader.load();     
+            Parent rootDetalleView = fxmlLoader.load();
+            
+            // Ocultar la vista de la lista
+            rootProductosView.setVisible(false);
+            
+            // Añadir la vista de detalle al StackPane principal para que se muestre
+            StackPane rootMain = (StackPane)rootProductosView.getScene().getRoot();
+            rootMain.getChildren().add(rootDetalleView);
 
             ProductoDetalleViewController productoDetalleViewController = (ProductoDetalleViewController) fxmlLoader.getController();  
             productoDetalleViewController.setRootProductosView(rootProductosView);
@@ -157,13 +176,9 @@ public class ViewProductoController implements Initializable {
 
             productoSeleccionado = new Producto();
             productoDetalleViewController.setProducto(entityManager, productoSeleccionado, true);
+            
+            productoDetalleViewController.mostrarDatos();
 
-            // Ocultar la vista de la lista
-            rootProductosView.setVisible(false);
-
-            // Añadir la vista de detalle al StackPane principal para que se muestre
-            StackPane rootMain = (StackPane)rootProductosView.getScene().getRoot();
-            rootMain.getChildren().add(rootDetalleView);
         } catch (IOException ex) {
             Logger.getLogger(ViewProductoController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -174,58 +189,71 @@ public class ViewProductoController implements Initializable {
 
     @FXML
     private void onActionButtonEditar(ActionEvent event) {
+        if(productoSeleccionado != null) {
+            try {
+                // Cargar la vista de detalle
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductoDetalleView.fxml"));
+                Parent rootDetalleView = fxmlLoader.load();     
 
-        try {
-            // Cargar la vista de detalle
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductoDetalleView.fxml"));
-            Parent rootDetalleView = fxmlLoader.load();     
+                ProductoDetalleViewController productoDetalleViewController = (ProductoDetalleViewController) fxmlLoader.getController();  
+                productoDetalleViewController.setRootProductosView(rootProductosView);
 
-            ProductoDetalleViewController productoDetalleViewController = (ProductoDetalleViewController) fxmlLoader.getController();  
-            productoDetalleViewController.setRootProductosView(rootProductosView);
+                productoDetalleViewController.setTableViewPrevio(tableViewProducto);
 
-            productoDetalleViewController.setTableViewPrevio(tableViewProducto);
+                productoDetalleViewController.setProducto(entityManager, productoSeleccionado, false);
 
-            productoDetalleViewController.setProducto(entityManager, productoSeleccionado, false);
-
-            productoDetalleViewController.mostrarDatos();
+                productoDetalleViewController.mostrarDatos();
 
 
-            // Ocultar la vista de la lista
-            rootProductosView.setVisible(false);
+                // Ocultar la vista de la lista
+                rootProductosView.setVisible(false);
 
-            // Añadir la vista de detalle al StackPane principal para que se muestre
-            StackPane rootMain = (StackPane)rootProductosView.getScene().getRoot();
-            rootMain.getChildren().add(rootDetalleView);
-        } catch (IOException ex) {
-            Logger.getLogger(ViewProductoController.class.getName()).log(Level.SEVERE, null, ex);
+                // Añadir la vista de detalle al StackPane principal para que se muestre
+                StackPane rootMain = (StackPane)rootProductosView.getScene().getRoot();
+                rootMain.getChildren().add(rootDetalleView);
+            } catch (IOException ex) {
+                Logger.getLogger(ViewProductoController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Atención");
+            alert.setHeaderText("Debe seleccionar un producto.");
+            alert.showAndWait();
         }
     }
 
     @FXML
     private void onActionButtonSuprimir(ActionEvent event) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Confirmar");
-        alert.setHeaderText("¿Desea suprimir el siguiente registro?");
-        alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            // Acciones a realizar si el usuario acepta
-            entityManager.getTransaction().begin();
-            entityManager.merge(productoSeleccionado);
-            entityManager.remove(productoSeleccionado);
-            entityManager.getTransaction().commit();
-            
-            tableViewProducto.getItems().remove(productoSeleccionado);
+        if(productoSeleccionado != null) {
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar");
+            alert.setHeaderText("¿Desea suprimir el siguiente registro?");
+            alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                // Acciones a realizar si el usuario acepta
+                entityManager.getTransaction().begin();
+                entityManager.merge(productoSeleccionado);
+                entityManager.remove(productoSeleccionado);
+                entityManager.getTransaction().commit();
 
-            tableViewProducto.getFocusModel().focus(null);
-            tableViewProducto.requestFocus();
+                tableViewProducto.getItems().remove(productoSeleccionado);
+
+                tableViewProducto.getFocusModel().focus(null);
+                tableViewProducto.requestFocus();
+            } else {
+                // Acciones a realizar si el usuario cancela
+                int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
+                tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
+                TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
+                tableViewProducto.getFocusModel().focus(pos);
+                tableViewProducto.requestFocus();    
+            }
         } else {
-            // Acciones a realizar si el usuario cancela
-            int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
-            tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
-            TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
-            tableViewProducto.getFocusModel().focus(pos);
-            tableViewProducto.requestFocus();    
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Atención");
+            alert.setHeaderText("Debe seleccionar un producto.");
+            alert.showAndWait();
         }
     }
 }

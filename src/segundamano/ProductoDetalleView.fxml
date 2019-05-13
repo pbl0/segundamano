@@ -54,10 +54,11 @@
             <Button mnemonicParsing="false" onAction="#onActionButtonGuardar" text="Guardar" GridPane.columnIndex="2" />
             <Button mnemonicParsing="false" onAction="#onActionButtonCancelar" text="Cancelar" GridPane.columnIndex="2" GridPane.rowIndex="1" />
             <Label alignment="CENTER" prefWidth="27.0" text="Foto:" GridPane.rowIndex="8" />
-            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
                <children>
-                  <ImageView fx:id="imageViewFoto" fitHeight="160.0" fitWidth="228.0" pickOnBounds="true" preserveRatio="true" />
+                  <ImageView fx:id="imageViewFoto" fitHeight="190.0" fitWidth="190.0" pickOnBounds="true" preserveRatio="true" />
                   <Button mnemonicParsing="false" onAction="#onActionButtonExaminar" text="Examinar" />
+                  <Button mnemonicParsing="false" onAction="#onActionSuprimirFoto" text="Eliminar" />
                </children>
             </HBox>
          </children>
