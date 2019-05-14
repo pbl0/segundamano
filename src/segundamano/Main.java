@@ -48,7 +48,7 @@ public class Main extends Application {
         productoController.cargarTodosProductos();
         
         // Escena
-        Scene scene = new Scene(rootMain, 720, 540);
+        Scene scene = new Scene(rootMain, 800, 540);
         primaryStage.setTitle("Segunda Mano");
         primaryStage.setScene(scene);
         primaryStage.show();

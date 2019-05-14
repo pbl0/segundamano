@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -32,10 +33,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -65,7 +69,7 @@ public class ProductoDetalleViewController implements Initializable {
     @FXML
     private TextArea textAreaDesc;
     @FXML
-    private CheckBox checkBoxNuevo;
+    private CheckBox checkBoxEnvInt;
     @FXML
     private DatePicker datePickerFecha;
     @FXML
@@ -74,6 +78,14 @@ public class ProductoDetalleViewController implements Initializable {
     private ImageView imageViewFoto;
     @FXML
     private AnchorPane rootProductosDetalleView;
+    @FXML
+    private RadioButton radioButtonNuevo;
+    @FXML
+    private RadioButton radioButtonCasi;
+    @FXML
+    private RadioButton radioButtonUsado;
+    @FXML
+    private RadioButton radioButtonEstropeado;
 
     private Pane rootProductosView;
     private TableView tableViewPrevio;
@@ -81,7 +93,13 @@ public class ProductoDetalleViewController implements Initializable {
     private EntityManager entityManager;
     private boolean nuevoProducto;
     
+    public static final char NUEVO = 'N';
+    public static final char CASI_NUEVO = 'C';
+    public static final char USADO = 'U';
+    public static final char ESTROPEADO = 'E';
+    
     public static final String CARPETA_FOTOS = "Fotos";
+
     /**
      * Initializes the controller class.
      */
@@ -97,6 +115,22 @@ public class ProductoDetalleViewController implements Initializable {
         rootProductosView.setVisible(true);
     }
     
+    public static void limitTextField(TextField textField, int limit) {
+        UnaryOperator<Change> textLimitFilter = change -> {
+            if (change.isContentChange()) {
+                int newLength = change.getControlNewText().length();
+                if (newLength > limit) {
+                    String trimmedText = change.getControlNewText().substring(0, limit);
+                    change.setText(trimmedText);
+                    int oldLength = change.getControlText().length();
+                    change.setRange(0, oldLength);
+                }
+            }
+            return change;
+        };
+        textField.setTextFormatter(new TextFormatter(textLimitFilter));
+    }
+    
     //boton de guardar
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {
@@ -110,7 +144,7 @@ public class ProductoDetalleViewController implements Initializable {
                 this.producto.setPrecio(BigDecimal.valueOf(Double.valueOf(textFieldPrecio.getText())));
             } catch (NumberFormatException e) {
                 errorFormato = true;
-            Alert alert = new Alert(AlertType.INFORMATION, "Precio no válido");
+            Alert alert = new Alert(AlertType.INFORMATION, "Precio no válido!");
             alert.showAndWait();
             textFieldPrecio.requestFocus();
             }
@@ -120,14 +154,24 @@ public class ProductoDetalleViewController implements Initializable {
                 this.producto.setEnvio(BigDecimal.valueOf(Double.valueOf(textFieldEnvio.getText())));
             } catch (NumberFormatException e) {
                 errorFormato = true;
-            Alert alert = new Alert(AlertType.INFORMATION, "Coste de envio no válido");
+            Alert alert = new Alert(AlertType.INFORMATION, "Coste de envio no válido!");
             alert.showAndWait();
             textFieldEnvio.requestFocus();
             }
         }
         
         this.producto.setDescripcion(textAreaDesc.getText());
-        this.producto.setNuevo(checkBoxNuevo.selectedProperty().get());
+        this.producto.setEnvInt(checkBoxEnvInt.selectedProperty().get());
+        
+        if (radioButtonNuevo.isSelected()) {
+            producto.setEstado(NUEVO);
+        } else if (radioButtonCasi.isSelected()) {
+            producto.setEstado(CASI_NUEVO);
+        } else if (radioButtonUsado.isSelected()) {
+            producto.setEstado(USADO);
+        } else if (radioButtonEstropeado.isSelected()) {
+            producto.setEstado(ESTROPEADO);
+        }
         
         if (datePickerFecha.getValue() != null) {
             LocalDate localDate = datePickerFecha.getValue();
@@ -142,12 +186,12 @@ public class ProductoDetalleViewController implements Initializable {
         if(comboBoxVendedor.getValue() != null){
             producto.setUsuario(comboBoxVendedor.getValue());
         } else {
-            Alert alert = new Alert(AlertType.INFORMATION, "Debe indicar un vendedor");
+            Alert alert = new Alert(AlertType.INFORMATION, "Debe indicar un vendedor!");
             alert.showAndWait();
             errorFormato = true;
         }
         
-        //DB
+        //Si no hay error de formato:
         if(!errorFormato){
             try {
                 if(nuevoProducto){
@@ -177,7 +221,7 @@ public class ProductoDetalleViewController implements Initializable {
                         "Compruebe que los datos cumplen los requisitos");
                 alert.setContentText(ex.getLocalizedMessage());
                 alert.showAndWait();
-                //recomenzamos transaction
+                //recomenzar transaction
                 entityManager.getTransaction().begin();
             }
         }
@@ -215,10 +259,10 @@ public class ProductoDetalleViewController implements Initializable {
                 Image image = new Image(file.toURI().toString());
                 imageViewFoto.setImage(image);
             } catch (FileAlreadyExistsException ex) {
-                Alert alert = new Alert(AlertType.WARNING, "Nombre de archivo duplicado");
+                Alert alert = new Alert(AlertType.WARNING, "Nombre de archivo duplicado!");
                 alert.showAndWait();
             } catch (IOException ex) {
-                Alert alert = new Alert(AlertType.WARNING, "No se ha podido guardar la imagen");
+                Alert alert = new Alert(AlertType.WARNING, "No se ha podido guardar la imagen!");
                 alert.showAndWait();
             }
         }
@@ -283,19 +327,32 @@ public class ProductoDetalleViewController implements Initializable {
             textFieldEnvio.setText(producto.getEnvio().toString());
         }
         
-        
         textAreaDesc.setText(producto.getDescripcion());
         
-        if (producto.getNuevo() != null){
-            checkBoxNuevo.setSelected(producto.getNuevo());
+        if (producto.getEnvInt() != null){
+            checkBoxEnvInt.setSelected(producto.getEnvInt());
         }
-        
         
         if(producto.getFecha() != null){
             datePickerFecha.setValue(producto.getFecha().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
         }
         
-        
+        if (producto.getEstado() != null) {
+            switch (producto.getEstado()) {
+                case NUEVO:
+                    radioButtonNuevo.setSelected(true);
+                    break;
+                case CASI_NUEVO:
+                    radioButtonCasi.setSelected(true);
+                    break;
+                case USADO:
+                    radioButtonUsado.setSelected(true);
+                    break;
+                case ESTROPEADO:
+                    radioButtonEstropeado.setSelected(true);
+                    break;
+            }
+        }
         
         //Consulta usuarios
         Query queryUsuarioFindAll = entityManager.createNamedQuery("Usuario.findAll");

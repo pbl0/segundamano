@@ -36,9 +36,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Producto.findByNombre", query = "SELECT p FROM Producto p WHERE p.nombre = :nombre")
     , @NamedQuery(name = "Producto.findByFabricante", query = "SELECT p FROM Producto p WHERE p.fabricante = :fabricante")
     , @NamedQuery(name = "Producto.findByDescripcion", query = "SELECT p FROM Producto p WHERE p.descripcion = :descripcion")
-    , @NamedQuery(name = "Producto.findByNuevo", query = "SELECT p FROM Producto p WHERE p.nuevo = :nuevo")
+    , @NamedQuery(name = "Producto.findByEstado", query = "SELECT p FROM Producto p WHERE p.estado = :estado")
     , @NamedQuery(name = "Producto.findByPrecio", query = "SELECT p FROM Producto p WHERE p.precio = :precio")
     , @NamedQuery(name = "Producto.findByEnvio", query = "SELECT p FROM Producto p WHERE p.envio = :envio")
+    , @NamedQuery(name = "Producto.findByEnvInt", query = "SELECT p FROM Producto p WHERE p.envInt = :envInt")
     , @NamedQuery(name = "Producto.findByFoto", query = "SELECT p FROM Producto p WHERE p.foto = :foto")
     , @NamedQuery(name = "Producto.findByFecha", query = "SELECT p FROM Producto p WHERE p.fecha = :fecha")})
 public class Producto implements Serializable {
@@ -59,8 +60,8 @@ public class Producto implements Serializable {
     @Column(name = "DESCRIPCION")
     private String descripcion;
     @Basic(optional = false)
-    @Column(name = "NUEVO")
-    private Boolean nuevo;
+    @Column(name = "ESTADO")
+    private Character estado;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @Column(name = "PRECIO")
@@ -69,6 +70,8 @@ public class Producto implements Serializable {
     @Column(name = "ENVIO")
     private BigDecimal envio;
     @Basic(optional = false)
+    @Column(name = "ENV_INT")
+    private Boolean envInt;
     @Column(name = "FOTO")
     private String foto;
     @Column(name = "FECHA")
@@ -85,15 +88,15 @@ public class Producto implements Serializable {
         this.id = id;
     }
 
-    public Producto(Integer id, String nombre, String fabricante, String descripcion, Boolean nuevo, BigDecimal precio, BigDecimal envio, String foto) {
+    public Producto(Integer id, String nombre, String fabricante, String descripcion, Character estado, BigDecimal precio, BigDecimal envio, Boolean envInt) {
         this.id = id;
         this.nombre = nombre;
         this.fabricante = fabricante;
         this.descripcion = descripcion;
-        this.nuevo = nuevo;
+        this.estado = estado;
         this.precio = precio;
         this.envio = envio;
-        this.foto = foto;
+        this.envInt = envInt;
     }
 
     public Integer getId() {
@@ -128,12 +131,12 @@ public class Producto implements Serializable {
         this.descripcion = descripcion;
     }
 
-    public Boolean getNuevo() {
-        return nuevo;
+    public Character getEstado() {
+        return estado;
     }
 
-    public void setNuevo(Boolean nuevo) {
-        this.nuevo = nuevo;
+    public void setEstado(Character estado) {
+        this.estado = estado;
     }
 
     public BigDecimal getPrecio() {
@@ -150,6 +153,14 @@ public class Producto implements Serializable {
 
     public void setEnvio(BigDecimal envio) {
         this.envio = envio;
+    }
+
+    public Boolean getEnvInt() {
+        return envInt;
+    }
+
+    public void setEnvInt(Boolean envInt) {
+        this.envInt = envInt;
     }
 
     public String getFoto() {

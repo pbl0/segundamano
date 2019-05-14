@@ -29,9 +29,9 @@ public class SegundaMano {
         java.math.BigDecimal precio = new java.math.BigDecimal("150.50");
         java.math.BigDecimal envio = new java.math.BigDecimal("7.00");
         
-        Producto productoNuevo = new Producto(0, "Televisor", "Panasonic", "Descripción", false, precio, envio, "foto");
+        //Producto productoNuevo = new Producto(0, "Televisor", "Panasonic", "Descripción", false, precio, envio, "foto");
         Usuario usuario = em.find(Usuario.class, 5);
-        productoNuevo.setUsuario(usuario);
+        //productoNuevo.setUsuario(usuario);
         
         // Transacción
         em.getTransaction().begin();
@@ -39,11 +39,11 @@ public class SegundaMano {
         String sDate = "03/07/2018";
         try {
             Date date = new SimpleDateFormat("dd/MM/yyyy").parse(sDate);
-            productoNuevo.setFecha(date);
+            //productoNuevo.setFecha(date);
         } catch (ParseException ex) {
         }
         
-        em.persist(productoNuevo);
+        //em.persist(productoNuevo);
         
         
         // Modificar/Eliminar objeto

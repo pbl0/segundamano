@@ -51,13 +51,11 @@ public class ViewProductoController implements Initializable {
     @FXML
     private TableColumn<Producto, String> columnDesc;
     @FXML
-    private TableColumn<Producto, String> columnNuevo;
+    private TableColumn<Producto, String> columnEnvInt;
     @FXML
     private TableColumn<Producto, Decimal> columnPrecio;
     @FXML
     private TableColumn<Producto, Decimal> columnEnvio;
-    //@FXML
-    //private TableColumn<Producto, String> columnFoto;
     @FXML
     private TableColumn<Producto, String> columnFecha;
     @FXML
@@ -68,7 +66,14 @@ public class ViewProductoController implements Initializable {
     private TextField textFieldFabrica;
     @FXML
     private AnchorPane rootProductosView;
-
+    @FXML
+    private TableColumn<Producto, String> columnEstado;
+    
+    public static final char NUEVO = 'N';
+    public static final char CASI_NUEVO = 'C';
+    public static final char USADO = 'U';
+    public static final char ESTROPEADO = 'E';
+    
     /**
      * Initializes the controller class.
      */
@@ -80,11 +85,11 @@ public class ViewProductoController implements Initializable {
         //columnNuevo.setCellValueFactory(new PropertyValueFactory<>("nuevo"));
         columnPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         columnEnvio.setCellValueFactory(new PropertyValueFactory<>("envio"));
-        columnNuevo.setCellValueFactory(
+        columnEnvInt.setCellValueFactory(
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
                 
-                if (cellData.getValue().getNuevo()){
+                if (cellData.getValue().getEnvInt()){
                     property.setValue("\u2713");
                 } else{
                     property.setValue("\u2717");
@@ -122,9 +127,28 @@ public class ViewProductoController implements Initializable {
                     textFieldFabrica.setText("");
                 }
         });
-        
-
-    }
+        columnEstado.setCellValueFactory(
+            cellData -> {
+                SimpleStringProperty property = new SimpleStringProperty();
+                
+                switch (cellData.getValue().getEstado()) {
+                    case NUEVO:
+                        property.setValue("Nuevo");
+                        break;
+                    case CASI_NUEVO:
+                        property.setValue("Casi Nuevo");
+                        break;
+                    case USADO:
+                        property.setValue("Usado");
+                        break;
+                    case ESTROPEADO:
+                        property.setValue("Estropeado");
+                        break;
+                
+                }
+                return property;
+            });
+        }
     
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -182,9 +206,6 @@ public class ViewProductoController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(ViewProductoController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
-        
     }
 
     @FXML
@@ -203,7 +224,6 @@ public class ViewProductoController implements Initializable {
                 productoDetalleViewController.setProducto(entityManager, productoSeleccionado, false);
 
                 productoDetalleViewController.mostrarDatos();
-
 
                 // Ocultar la vista de la lista
                 rootProductosView.setVisible(false);
