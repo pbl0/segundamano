@@ -29,13 +29,11 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         // Carga el view
-        
-        //Parent root = fxmlLoader.load();
-        
         StackPane rootMain = new StackPane();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ViewProducto.fxml"));
         Pane rootProductosView = fxmlLoader.load();
         rootMain.getChildren().add(rootProductosView);
+        
         // Carga del EntityManager
         emf = Persistence.createEntityManagerFactory("SegundaManoPU");
         em = emf.createEntityManager();
@@ -52,6 +50,7 @@ public class Main extends Application {
         primaryStage.setTitle("Segunda Mano");
         primaryStage.setScene(scene);
         primaryStage.show();
+        
     }
 
     @Override
@@ -64,7 +63,7 @@ public class Main extends Application {
     }        
         
     }
-
+    
     /**
      * @param args the command line arguments
      */

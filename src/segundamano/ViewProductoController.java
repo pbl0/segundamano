@@ -28,6 +28,7 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javax.persistence.EntityManager;
@@ -42,6 +43,7 @@ import org.apache.derby.client.am.Decimal;
 public class ViewProductoController implements Initializable {
     private EntityManager entityManager;
     private Producto productoSeleccionado;
+    
     @FXML
     private TableView<Producto> tableViewProducto;
     @FXML
@@ -150,6 +152,7 @@ public class ViewProductoController implements Initializable {
             });
         }
     
+    
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -159,9 +162,9 @@ public class ViewProductoController implements Initializable {
         List<Producto> listProducto = queryProductoTodos.getResultList();
         tableViewProducto.setItems(FXCollections.observableArrayList(listProducto));
     }
-
+    
     @FXML
-    private void onActionButtonGuardar(ActionEvent event) {
+    private void onActionButtonGuardar(ActionEvent event) {  
         if (productoSeleccionado != null){
             productoSeleccionado.setNombre(textFieldNombre.getText());
             productoSeleccionado.setFabricante(textFieldFabrica.getText());
@@ -178,7 +181,7 @@ public class ViewProductoController implements Initializable {
             tableViewProducto.requestFocus();
         }
     }
-
+    
     @FXML
     private void onActionButtonNuevo(ActionEvent event) {
         try {
@@ -235,13 +238,13 @@ public class ViewProductoController implements Initializable {
                 Logger.getLogger(ViewProductoController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            Alert alert = new Alert(AlertType.INFORMATION);
+            Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Atención");
             alert.setHeaderText("Debe seleccionar un producto.");
             alert.showAndWait();
         }
-    }
-
+    }       
+            
     @FXML
     private void onActionButtonSuprimir(ActionEvent event) {
         if(productoSeleccionado != null) {
@@ -270,10 +273,11 @@ public class ViewProductoController implements Initializable {
                 tableViewProducto.requestFocus();    
             }
         } else {
-            Alert alert = new Alert(AlertType.INFORMATION);
+            Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Atención");
             alert.setHeaderText("Debe seleccionar un producto.");
             alert.showAndWait();
         }
     }
+    
 }

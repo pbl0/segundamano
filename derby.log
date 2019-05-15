@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Tue May 14 10:29:02 CEST 2019:
- Iniciando instancia a816c00e-016a-b575-91d2-000002a84980 de Derby, versión The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): 
-en el directorio de base de datos C:\Users\PC15\Documents\NetBeansProjects\SegundaMano\DB con el cargador de clases sun.misc.Launcher$AppClassLoader@6f94fa3e
+Wed May 15 10:22:21 CEST 2019:
+ Iniciando instancia a816c00e-016a-ba95-ce3a-0000021d4d50 de Derby, versión The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): 
+en el directorio de base de datos C:\Users\PC15\Documents\NetBeansProjects\SegundaMano\DB con el cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
 Cargado desde file:/C:/Program%20Files/glassfish-4.1.1/javadb/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_191-b12
@@ -11,7 +11,7 @@ os.arch=amd64
 os.version=10.0
 derby.system.home=null
 Cargador de clases de base de datos iniciado - derby.database.classpath=''
-Tue May 14 10:29:58 CEST 2019 Thread[JavaFX Application Thread,5,main] Cleanup action starting
+Wed May 15 10:34:26 CEST 2019 Thread[JavaFX Application Thread,5,main] Cleanup action starting
 java.sql.SQLException: No se ha encontrado la base de datos '/BD'.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
@@ -27,7 +27,7 @@ java.sql.SQLException: No se ha encontrado la base de datos '/BD'.
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql.DriverManager.getConnection(DriverManager.java:664)
 	at java.sql.DriverManager.getConnection(DriverManager.java:270)
-	at segundamano.Main.stop(Main.java:62)
+	at segundamano.Main.stop(Main.java:61)
 	at com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$162(LauncherImpl.java:882)
 	at com.sun.javafx.application.PlatformImpl.lambda$runAndWait$174(PlatformImpl.java:326)
 	at com.sun.javafx.application.PlatformImpl.lambda$null$172(PlatformImpl.java:295)
@@ -59,7 +59,7 @@ java.sql.SQLException: No se ha encontrado la base de datos '/BD'.
 	at org.apache.derby.jdbc.AutoloadedDriver.connect(Unknown Source)
 	at java.sql.DriverManager.getConnection(DriverManager.java:664)
 	at java.sql.DriverManager.getConnection(DriverManager.java:270)
-	at segundamano.Main.stop(Main.java:62)
+	at segundamano.Main.stop(Main.java:61)
 	at com.sun.javafx.application.LauncherImpl.lambda$launchApplication1$162(LauncherImpl.java:882)
 	at com.sun.javafx.application.PlatformImpl.lambda$runAndWait$174(PlatformImpl.java:326)
 	at com.sun.javafx.application.PlatformImpl.lambda$null$172(PlatformImpl.java:295)
