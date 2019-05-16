@@ -19,13 +19,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="rootProductosDetalleView" prefHeight="540.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="segundamano.ProductoDetalleViewController">
+<AnchorPane id="AnchorPane" fx:id="rootProductosDetalleView" prefHeight="540.0" prefWidth="800.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="segundamano.ProductoDetalleViewController">
    <children>
-      <GridPane hgap="10.0" prefHeight="400.0" prefWidth="600.0" vgap="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane hgap="10.0" prefHeight="540.0" prefWidth="600.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="108.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="10.0" prefWidth="478.0" />
-            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="271.0" minWidth="10.0" prefWidth="154.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="10.0" prefWidth="146.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="478.0" minWidth="10.0" prefWidth="376.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="271.0" minWidth="10.0" prefWidth="218.0" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -40,7 +40,7 @@
             <RowConstraints minHeight="30.0" prefHeight="300.0" valignment="TOP" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label prefWidth="55.0" text="Producto:" />
+            <Label prefHeight="19.0" text="Producto:" />
             <Label text="Fabricante:" GridPane.rowIndex="1" />
             <Label text="Descripción:" GridPane.rowIndex="2" />
             <Label text="Internacional:" GridPane.rowIndex="6" />
@@ -56,28 +56,28 @@
             <CheckBox fx:id="checkBoxEnvInt" mnemonicParsing="false" text="Envio Internacional" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <DatePicker fx:id="datePickerFecha" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <ComboBox fx:id="comboBoxVendedor" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonGuardar" prefWidth="85.0" text="Guardar" GridPane.columnIndex="2">
+            <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonGuardar" prefWidth="90.0" text="Guardar" GridPane.columnIndex="2">
                <graphic>
-                  <FontAwesomeIconView glyphName="SAVE" size="15" />
+                  <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15" />
                </graphic></Button>
-            <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonCancelar" prefWidth="85.0" text="Cancelar" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonCancelar" prefWidth="90.0" text="Cancelar" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <graphic>
-                  <FontAwesomeIconView glyphName="TIMES" size="15" />
+                  <FontAwesomeIconView fill="WHITE" glyphName="TIMES" size="15" />
                </graphic></Button>
-            <Label alignment="CENTER" prefWidth="27.0" text="Foto:" GridPane.rowIndex="9" />
+            <Label alignment="CENTER" text="Foto:" GridPane.rowIndex="9" />
             <HBox prefHeight="100.0" prefWidth="200.0" spacing="100.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
                <children>
                   <ImageView fx:id="imageViewFoto" fitHeight="170.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" />
-                  <VBox prefHeight="170.0" prefWidth="90.0" spacing="10.0">
+                  <VBox prefHeight="170.0" prefWidth="110.0" spacing="5.0">
                      <children>
-                        <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonExaminar" prefWidth="85.0" text="Examinar">
+                        <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonExaminar" prefWidth="90.0" text="Examinar">
                            <graphic>
-                              <FontAwesomeIconView glyphName="SEARCH" size="15" />
+                              <FontAwesomeIconView fill="WHITE" glyphName="SEARCH" size="15" />
                            </graphic>
                         </Button>
-                        <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionSuprimirFoto" prefWidth="85.0" text="Eliminar">
+                        <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionSuprimirFoto" prefWidth="90.0" text="Eliminar">
                            <graphic>
-                              <FontAwesomeIconView glyphName="TRASH" size="15" />
+                              <FontAwesomeIconView fill="WHITE" glyphName="TRASH" size="15" />
                            </graphic>
                         </Button>
                      </children>

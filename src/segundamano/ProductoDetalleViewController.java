@@ -234,9 +234,14 @@ public class ProductoDetalleViewController implements Initializable {
         this.volverLista();
         
         int numFilaSeleccionada = tableViewPrevio.getSelectionModel().getSelectedIndex();
+        System.out.println("numFilaSeleccionada " + numFilaSeleccionada);
         TablePosition pos = new TablePosition(tableViewPrevio, numFilaSeleccionada, null);
         tableViewPrevio.getFocusModel().focus(pos);
         tableViewPrevio.requestFocus();
+        // ViewProductoController.productoSeleccionado = null;
+        System.out.println("producto.getId() " + producto.getId());
+
+        
     }
     
     @FXML

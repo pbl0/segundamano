@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" fx:id="rootProductosView" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="segundamano.ViewProductoController">
+<AnchorPane id="AnchorPane" fx:id="rootProductosView" prefWidth="800.0" stylesheets="@estilos.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="segundamano.ViewProductoController">
     <children>
       <VBox prefHeight="480.0" prefWidth="840.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -22,15 +22,15 @@
                <children>
                   <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonNuevo" prefWidth="85.0" text="Nuevo">
                      <graphic>
-                        <FontAwesomeIconView glyphName="PLUS" size="15" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="PLUS" size="15" />
                      </graphic></Button>
                   <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonEditar" prefWidth="85.0" text="Editar">
                      <graphic>
-                        <FontAwesomeIconView glyphName="EDIT" size="15" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="EDIT" size="15" />
                      </graphic></Button>
                   <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonSuprimir" prefWidth="85.0" text="Suprimir">
                      <graphic>
-                        <FontAwesomeIconView glyphName="TRASH" size="15" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="TRASH" size="15" />
                      </graphic></Button>
                </children>
             </HBox>
@@ -64,7 +64,7 @@
                   <TextField fx:id="textFieldFabrica" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Button minWidth="30.0" mnemonicParsing="false" onAction="#onActionButtonGuardar" prefWidth="85.0" text="Guardar" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <graphic>
-                        <FontAwesomeIconView glyphName="SAVE" size="15" />
+                        <FontAwesomeIconView fill="WHITE" glyphName="SAVE" size="15" />
                      </graphic></Button>
                </children>
             </GridPane>

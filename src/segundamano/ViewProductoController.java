@@ -6,6 +6,7 @@
 package segundamano;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -28,7 +29,6 @@ import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javax.persistence.EntityManager;
@@ -213,7 +213,7 @@ public class ViewProductoController implements Initializable {
 
     @FXML
     private void onActionButtonEditar(ActionEvent event) {
-        if(productoSeleccionado != null) {
+        if(productoSeleccionado != null && productoSeleccionado.getId() != null) {
             try {
                 // Cargar la vista de detalle
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("ProductoDetalleView.fxml"));
@@ -223,9 +223,9 @@ public class ViewProductoController implements Initializable {
                 productoDetalleViewController.setRootProductosView(rootProductosView);
 
                 productoDetalleViewController.setTableViewPrevio(tableViewProducto);
-
+                
                 productoDetalleViewController.setProducto(entityManager, productoSeleccionado, false);
-
+                
                 productoDetalleViewController.mostrarDatos();
 
                 // Ocultar la vista de la lista
@@ -247,31 +247,35 @@ public class ViewProductoController implements Initializable {
             
     @FXML
     private void onActionButtonSuprimir(ActionEvent event) {
-        if(productoSeleccionado != null) {
-            Alert alert = new Alert(AlertType.CONFIRMATION);
-            alert.setTitle("Confirmar");
-            alert.setHeaderText("¿Desea suprimir el siguiente registro?");
-            alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
-                // Acciones a realizar si el usuario acepta
-                entityManager.getTransaction().begin();
-                entityManager.merge(productoSeleccionado);
-                entityManager.remove(productoSeleccionado);
-                entityManager.getTransaction().commit();
+        System.out.println("productoSeleccionado: " + productoSeleccionado);
+        
+        if(productoSeleccionado != null && productoSeleccionado.getId() != null) {
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmar");
+                alert.setHeaderText("¿Desea suprimir el siguiente registro?");
+                alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    // Acciones a realizar si el usuario acepta
+                    entityManager.getTransaction().begin();
+                    entityManager.merge(productoSeleccionado);
+                    entityManager.remove(productoSeleccionado);
+                    entityManager.getTransaction().commit();
 
-                tableViewProducto.getItems().remove(productoSeleccionado);
+                    tableViewProducto.getItems().remove(productoSeleccionado);
 
-                tableViewProducto.getFocusModel().focus(null);
-                tableViewProducto.requestFocus();
-            } else {
-                // Acciones a realizar si el usuario cancela
-                int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
-                tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
-                TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
-                tableViewProducto.getFocusModel().focus(pos);
-                tableViewProducto.requestFocus();    
-            }
+                    tableViewProducto.getFocusModel().focus(null);
+                    tableViewProducto.requestFocus();
+                } else {
+                    // Acciones a realizar si el usuario cancela
+                    int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
+                    tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
+                    TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
+                    tableViewProducto.getFocusModel().focus(pos);
+                    tableViewProducto.requestFocus();
+                }
+            
+
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Atención");
