@@ -6,7 +6,6 @@
 package segundamano;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -37,8 +36,8 @@ import org.apache.derby.client.am.Decimal;
 
 /**
  * FXML Controller class
- *
- * @author PC15
+ * Clase controladora de la vista principal
+ * @author Pablo Barragan
  */
 public class ViewProductoController implements Initializable {
     private EntityManager entityManager;
@@ -71,6 +70,7 @@ public class ViewProductoController implements Initializable {
     @FXML
     private TableColumn<Producto, String> columnEstado;
     
+    // Constantes
     public static final char NUEVO = 'N';
     public static final char CASI_NUEVO = 'C';
     public static final char USADO = 'U';
@@ -84,13 +84,12 @@ public class ViewProductoController implements Initializable {
         columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnFabrica.setCellValueFactory(new PropertyValueFactory<>("fabricante"));
         columnDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        //columnNuevo.setCellValueFactory(new PropertyValueFactory<>("nuevo"));
         columnPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         columnEnvio.setCellValueFactory(new PropertyValueFactory<>("envio"));
         columnEnvInt.setCellValueFactory(
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
-                
+                // Mostrar Tick o X
                 if (cellData.getValue().getEnvInt()){
                     property.setValue("\u2713");
                 } else{
@@ -99,11 +98,10 @@ public class ViewProductoController implements Initializable {
                 return property;
             }
         );
-        
         columnFecha.setCellValueFactory(
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
-
+                // Convertir Fecha
                 if (cellData.getValue() != null) {
                     String dateString = new SimpleDateFormat("dd/MM/yyyy").format(cellData.getValue().getFecha());
                     property.setValue(dateString);
@@ -114,21 +112,11 @@ public class ViewProductoController implements Initializable {
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
                 if (cellData.getValue().getUsuario() != null) {
+                    // Nombre del objeto.
                     property.setValue(cellData.getValue().getUsuario().getNombre());
                 }
                 return property;
-            });	
-        tableViewProducto.getSelectionModel().selectedItemProperty().addListener(
-            (observable, oldValue, newValue) -> {
-                productoSeleccionado = newValue;
-                if (productoSeleccionado != null) {
-                    textFieldNombre.setText(productoSeleccionado.getNombre());
-                    textFieldFabrica.setText(productoSeleccionado.getFabricante());
-                } else {
-                    textFieldNombre.setText("");
-                    textFieldFabrica.setText("");
-                }
-        });
+            });
         columnEstado.setCellValueFactory(
             cellData -> {
                 SimpleStringProperty property = new SimpleStringProperty();
@@ -146,11 +134,22 @@ public class ViewProductoController implements Initializable {
                     case ESTROPEADO:
                         property.setValue("Estropeado");
                         break;
-                
                 }
                 return property;
             });
-        }
+        tableViewProducto.getSelectionModel().selectedItemProperty().addListener(
+            (observable, oldValue, newValue) -> {
+                productoSeleccionado = newValue;
+                // Rellenamos campos de texto
+                if (productoSeleccionado != null) {
+                    textFieldNombre.setText(productoSeleccionado.getNombre());
+                    textFieldFabrica.setText(productoSeleccionado.getFabricante());
+                } else {
+                    textFieldNombre.setText("");
+                    textFieldFabrica.setText("");
+                }
+        });
+    }
     
     
     public void setEntityManager(EntityManager entityManager) {
@@ -163,6 +162,8 @@ public class ViewProductoController implements Initializable {
         tableViewProducto.setItems(FXCollections.observableArrayList(listProducto));
     }
     
+    
+    // Boton de guardado
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {  
         if (productoSeleccionado != null){
@@ -182,6 +183,7 @@ public class ViewProductoController implements Initializable {
         }
     }
     
+    // Boton de nuevo objeto
     @FXML
     private void onActionButtonNuevo(ActionEvent event) {
         try {
@@ -210,7 +212,9 @@ public class ViewProductoController implements Initializable {
             Logger.getLogger(ViewProductoController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
+    
+    // Boton de editar objeto seleccionado
     @FXML
     private void onActionButtonEditar(ActionEvent event) {
         if(productoSeleccionado != null && productoSeleccionado.getId() != null) {
@@ -244,38 +248,37 @@ public class ViewProductoController implements Initializable {
             alert.showAndWait();
         }
     }       
-            
+    
+    // Boton de borrar objeto seleccionado
     @FXML
     private void onActionButtonSuprimir(ActionEvent event) {
         System.out.println("productoSeleccionado: " + productoSeleccionado);
         
         if(productoSeleccionado != null && productoSeleccionado.getId() != null) {
-                Alert alert = new Alert(AlertType.CONFIRMATION);
-                alert.setTitle("Confirmar");
-                alert.setHeaderText("¿Desea suprimir el siguiente registro?");
-                alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK){
-                    // Acciones a realizar si el usuario acepta
-                    entityManager.getTransaction().begin();
-                    entityManager.merge(productoSeleccionado);
-                    entityManager.remove(productoSeleccionado);
-                    entityManager.getTransaction().commit();
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Confirmar");
+            alert.setHeaderText("¿Desea suprimir el siguiente registro?");
+            alert.setContentText(productoSeleccionado.getNombre() + "-" + productoSeleccionado.getFabricante());
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.OK){
+                // Acciones a realizar si el usuario acepta
+                entityManager.getTransaction().begin();
+                entityManager.merge(productoSeleccionado);
+                entityManager.remove(productoSeleccionado);
+                entityManager.getTransaction().commit();
 
-                    tableViewProducto.getItems().remove(productoSeleccionado);
+                tableViewProducto.getItems().remove(productoSeleccionado);
 
-                    tableViewProducto.getFocusModel().focus(null);
-                    tableViewProducto.requestFocus();
-                } else {
-                    // Acciones a realizar si el usuario cancela
-                    int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
-                    tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
-                    TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
-                    tableViewProducto.getFocusModel().focus(pos);
-                    tableViewProducto.requestFocus();
-                }
-            
-
+                tableViewProducto.getFocusModel().focus(null);
+                tableViewProducto.requestFocus();
+            } else {
+                // Acciones a realizar si el usuario cancela
+                int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();
+                tableViewProducto.getItems().set(numFilaSeleccionada, productoSeleccionado);
+                TablePosition pos = new TablePosition(tableViewProducto, numFilaSeleccionada, null);
+                tableViewProducto.getFocusModel().focus(pos);
+                tableViewProducto.requestFocus();
+            }
         } else {
             Alert alert = new Alert(AlertType.WARNING);
             alert.setTitle("Atención");

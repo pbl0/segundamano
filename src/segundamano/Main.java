@@ -20,7 +20,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author PC15
+ * @author Pablo Barragan
  */
 public class Main extends Application {
     private EntityManagerFactory emf;
@@ -51,10 +51,13 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
         
+        rootProductosView.requestFocus();
+        
     }
 
     @Override
     public void stop() throws Exception {
+        //Cerrar conexión BD
         em.close(); 
         emf.close(); 
     try { 

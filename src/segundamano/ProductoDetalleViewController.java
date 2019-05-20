@@ -53,8 +53,8 @@ import javax.persistence.RollbackException;
 
 /**
  * FXML Controller class
- *
- * @author PC15
+ * Clase controladora de la vista detalles
+ * @author Pablo Barragan
  */
 public class ProductoDetalleViewController implements Initializable {
     
@@ -108,7 +108,7 @@ public class ProductoDetalleViewController implements Initializable {
         // TODO
     }    
     
-    //Metodo para volver a la lista de productos.
+    // Metodo para volver a la lista de productos.
     private void volverLista(){
         StackPane rootMain = (StackPane)rootProductosDetalleView.getScene().getRoot();
         rootMain.getChildren().remove(rootProductosDetalleView);

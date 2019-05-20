@@ -1,14 +1,27 @@
 /*
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
-*/
-/* 
-    Created on : 16-may-2019, 8:45:59
-    Author     : Pablo Barragan
-*/
-
-
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2015 - AGIX | Innovative Engineering
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT 	SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *                                                                              
+ */
 
 
 .background {
@@ -23,26 +36,228 @@ and open the template in the editor.
     -fx-padding: 0.7em;
 }
 
-.table-view{
-    -fx-background-color: #03A9F4;
-    -fx-border-width: 0px;
-}
-
-.table-view .column-header .label{
-    -fx-background-color: #03A9F4;
-    -fx-padding: 0.5em;
-    -fx-text-fill: #FFFFFF;
-    
-}
-
-
 /* CONTROLS */
 .label {
     -fx-font-size: 13;
     -fx-padding: 0 8 0 0;
 }
 
-.text-field {
-    -fx-font-size: 13;
-    -fx-padding: 4 4 4 4;    
+.button:hover {
+	-fx-background-color: lightblue;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * Tables								                       				   *
+ *                                                                             *
+ ******************************************************************************/
+.table-view, .tree-table-view {
+	/* Constants used throughout the tableview. */
+	-fx-table-header-border-color: transparent;
+	-fx-table-cell-border-color: -fx-box-border; /* Horizontal Lines*/
+	-fx-background-color: transparent;
+}
+
+/* The column header row is made up of a number of column-header, one for each
+   TableColumn, and a 'filler' area that extends from the right-most column
+   to the edge of the tableview, or up to the 'column control' button. */
+.table-view .filler, .tree-table-view .filler, .table-view .column-header,
+	.tree-table-view .column-header {
+	-fx-size: 65;
+	-fx-border-style: null;
+	-fx-border-color: lightblue;
+	-fx-border-width: 0 0 2 0;
+	-fx-background-color: transparent;
+}
+
+.table-view .show-hide-columns-button, .tree-table-view .show-hide-columns-button
+	{
+	-fx-background-color: lightblue;
+}
+
+
+.table-view .column-header-background, .tree-table-view .column-header-background
+	{
+	-fx-background-color: transparent;
+}
+
+.table-row-cell, .tree-table-row-cell {
+	-fx-cell-size: 40px;
+}
+
+.table-cell {
+	-fx-border-color: transparent; /* Vertical Lines*/
+	-fx-border-width: 1;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Text, Text field & Text area                                                *
+ *                                                                             *
+ ******************************************************************************/
+.text-area, .text-field {
+	-fx-background-color: transparent;
+	-fx-background-radius: 2.0;
+	-fx-padding: 0.5em 0.5em 0.5em 0.1em;
+	-fx-border-color: lightblue;
+	-fx-border-width: 0 0 2 0;
+	-fx-highlight-fill: rgb(94.0, 203.0, 234.0);
+}
+
+.text-area .text, .text-field>*>.text {
+	-fx-effect: null;
+}
+
+.text-area {
+	-fx-padding: 0.15em;
+}
+
+.text-area .content {
+	-fx-padding: 0.7em;
+	-fx-border-width: 0.0;
+	-fx-background-color: transparent;
+}
+
+.text-area:focused  .content {
+	-fx-background-color: transparent;
+}
+
+.text-area:focused, .text-field:focused {
+	-fx-border-color: #03A9F4;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * CheckBox                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+.check-box {
+	-fx-padding: 10;
+
+}
+
+.check-box>.box, .check-box>.box.unfocused, .check-box:disabled>.box,
+	.check-box:indeterminate>.box {
+	-fx-border-radius: 4.0;
+	-fx-border-color: lightblue;
+	-fx-border-width: 2;
+	-fx-background-radius: 4;
+	-fx-background-color: transparent;
+	-fx-padding: 1;
+}
+
+.check-box:selected>.box {
+	-fx-border-color: #03A9F4;
+	-fx-background-color: #03A9F4;
+}
+
+.check-box:focused>.box {
+	-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.30), 6.0, 0.3, 0,
+		0);
+}
+
+.check-box:selected>.box>.mark {
+	-fx-background-color: white;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * ComboBox                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+.combo-box .list-cell {
+	-fx-padding: 0.7em 0.7em 0.7em 0em;
+}
+
+.popup-overlay {
+	-fx-background-color: white;
+	-fx-border-color: #03A9F4;
+	-fx-border-width: 0 0 2 0;
+	-fx-background-radius: 0;
+	-fx-border-radius: 0;
+}
+
+.title-bar {
+	-fx-padding: 10;
+}
+
+.title-bar .icon {
+	-fx-alignment: center-left;
+	-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.2), 0.0, 0.0, 0.0,
+		1.0);
+}
+
+.title-bar .title-label {
+	-fx-padding: 0 10 0 10;
+	-fx-alignment: center;
+	-fx-font-size: 36;
+	-fx-font-weight: bolder;
+}
+
+.content-background {
+	-fx-background-color: white;
+	-fx-background-radius: 0.0 0.0 11.0 11.0;
+	-fx-padding: 0 10 10 10;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Date Picker			                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+
+.date-picker-popup>.month-year-pane {
+	-fx-background-color: #03A9F4;
+}
+
+.date-picker-popup>*>.spinner>.button>.left-arrow, .date-picker-popup>*>.spinner>.button>.right-arrow
+	{
+	-fx-background-color: white;
+}
+
+.date-picker-popup>*>.spinner {
+	-fx-border-width: 0;
+}
+
+.date-picker-popup>*>.spinner>.label {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.date-picker-popup>*>.day-name-cell, .date-picker-popup>*>.week-number-cell
+	{
+	-fx-font-weight: normal;
+	-fx-font-size: 1em;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * RadioButton                                                                 *
+ *                                                                             *
+ ******************************************************************************/
+
+.radio-button>.radio, .radio-button>.radio.unfocused, .radio-button:disabled>.radio,
+	.radio-button:selected>.radio {
+	-fx-border-radius: 100.0;
+	-fx-border-color: lightblue;
+	-fx-border-width: 2;
+	-fx-background-radius: 100;
+	-fx-background-color: transparent;
+
+}
+.radio-button:selected>.radio {
+        -fx-border-color: #03A9F4;
+}
+
+.radio-button:focused:armed>.radio {
+	-fx-background-color: #03A9F4;
+}
+
+.radio-button:selected>.radio>.dot {
+	-fx-background-color: #03A9F4;
+	-fx-background-insets: 0;
 }
