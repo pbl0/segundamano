@@ -99,24 +99,9 @@ public class ProductoDetalleViewController implements Initializable {
     public static final char ESTROPEADO = 'E';
     
     public static final String CARPETA_FOTOS = "Fotos";
-
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
-    // Metodo para volver a la lista de productos.
-    private void volverLista(){
-        StackPane rootMain = (StackPane)rootProductosDetalleView.getScene().getRoot();
-        rootMain.getChildren().remove(rootProductosDetalleView);
-        rootProductosView.setVisible(true);
-    }
     
     public static void limitTextField(TextField textField, int limit) {
-        UnaryOperator<Change> textLimitFilter = change -> {
+        UnaryOperator<TextFormatter.Change> textLimitFilter = change -> {
             if (change.isContentChange()) {
                 int newLength = change.getControlNewText().length();
                 if (newLength > limit) {
@@ -131,7 +116,44 @@ public class ProductoDetalleViewController implements Initializable {
         textField.setTextFormatter(new TextFormatter(textLimitFilter));
     }
     
-    //boton de guardar
+    public static void limitTextArea(TextArea textArea, int limit) {
+        UnaryOperator<TextFormatter.Change> textLimitFilter = change -> {
+            if (change.isContentChange()) {
+                int newLength = change.getControlNewText().length();
+                if (newLength > limit) {
+                    String trimmedText = change.getControlNewText().substring(0, limit);
+                    change.setText(trimmedText);
+                    int oldLength = change.getControlText().length();
+                    change.setRange(0, oldLength);
+                }
+            }
+            return change;
+        };
+        textArea.setTextFormatter(new TextFormatter(textLimitFilter));
+    }
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // Limitamos numero de caracteres en cada campo de texto.
+        limitTextField(textFieldNombre, 20);
+        limitTextField(textFieldFabrica, 20);
+        limitTextField(textFieldPrecio, 8);
+        limitTextField(textFieldEnvio, 8);
+        limitTextArea(textAreaDesc, 155);
+        
+    }    
+    
+    // Metodo para volver a la lista de productos.
+    private void volverLista(){
+        StackPane rootMain = (StackPane)rootProductosDetalleView.getScene().getRoot();
+        rootMain.getChildren().remove(rootProductosDetalleView);
+        rootProductosView.setVisible(true);
+    }
+    
+    // Boton de guardar
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {
         boolean errorFormato = false;
@@ -191,7 +213,7 @@ public class ProductoDetalleViewController implements Initializable {
             errorFormato = true;
         }
         
-        //Si no hay error de formato:
+        // Si no hay error de formato:
         if(!errorFormato){
             try {
                 if(nuevoProducto){
@@ -221,7 +243,7 @@ public class ProductoDetalleViewController implements Initializable {
                         "Compruebe que los datos cumplen los requisitos");
                 alert.setContentText(ex.getLocalizedMessage());
                 alert.showAndWait();
-                //recomenzar transaction
+                // Recomenzar transaction
                 entityManager.getTransaction().begin();
             }
         }
@@ -240,6 +262,7 @@ public class ProductoDetalleViewController implements Initializable {
         tableViewPrevio.requestFocus();
         // ViewProductoController.productoSeleccionado = null;
         System.out.println("producto.getId() " + producto.getId());
+        
 
         
     }

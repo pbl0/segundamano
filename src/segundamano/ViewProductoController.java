@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleStringProperty;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -76,11 +78,31 @@ public class ViewProductoController implements Initializable {
     public static final char USADO = 'U';
     public static final char ESTROPEADO = 'E';
     
+    public static void limitTextField(TextField textField, int limit) {
+        UnaryOperator<TextFormatter.Change> textLimitFilter = change -> {
+            if (change.isContentChange()) {
+                int newLength = change.getControlNewText().length();
+                if (newLength > limit) {
+                    String trimmedText = change.getControlNewText().substring(0, limit);
+                    change.setText(trimmedText);
+                    int oldLength = change.getControlText().length();
+                    change.setRange(0, oldLength);
+                }
+            }
+            return change;
+        };
+        textField.setTextFormatter(new TextFormatter(textLimitFilter));
+    }
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        // Limitamos numero de caracteres en cada campo de texto.
+        limitTextField(textFieldNombre, 20);
+        limitTextField(textFieldFabrica, 20);
+        // Rellenar los campos de la tabla
         columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnFabrica.setCellValueFactory(new PropertyValueFactory<>("fabricante"));
         columnDesc.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
@@ -151,6 +173,7 @@ public class ViewProductoController implements Initializable {
         });
     }
     
+
     
     public void setEntityManager(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -264,13 +287,12 @@ public class ViewProductoController implements Initializable {
                 // Acciones a realizar si el usuario acepta
                 entityManager.getTransaction().begin();
                 entityManager.merge(productoSeleccionado);
-                entityManager.remove(productoSeleccionado);
+                entityManager.remove(productoSeleccionado);                
                 entityManager.getTransaction().commit();
-
                 tableViewProducto.getItems().remove(productoSeleccionado);
-
                 tableViewProducto.getFocusModel().focus(null);
                 tableViewProducto.requestFocus();
+
             } else {
                 // Acciones a realizar si el usuario cancela
                 int numFilaSeleccionada = tableViewProducto.getSelectionModel().getSelectedIndex();

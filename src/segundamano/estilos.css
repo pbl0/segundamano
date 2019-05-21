@@ -24,8 +24,16 @@
  */
 
 
-.background {
-    -fx-background-color: #1d1d1d;    
+/*Colores:
+* Azul normal -> #03A9F4
+* Azul oscuro -> #0288D1
+* Azul claro -> #B3E5FC
+*/
+
+/* Controles */
+.label {
+    -fx-font-size: 13;
+    -fx-padding: 0 8 0 0;
 }
 
 .button{
@@ -36,14 +44,8 @@
     -fx-padding: 0.7em;
 }
 
-/* CONTROLS */
-.label {
-    -fx-font-size: 13;
-    -fx-padding: 0 8 0 0;
-}
-
 .button:hover {
-	-fx-background-color: lightblue;
+	-fx-background-color: #0288D1;
 }
 
 
@@ -66,14 +68,14 @@
 	.tree-table-view .column-header {
 	-fx-size: 65;
 	-fx-border-style: null;
-	-fx-border-color: lightblue;
+	-fx-border-color: #B3E5FC;
 	-fx-border-width: 0 0 2 0;
 	-fx-background-color: transparent;
 }
 
 .table-view .show-hide-columns-button, .tree-table-view .show-hide-columns-button
 	{
-	-fx-background-color: lightblue;
+	-fx-background-color: #B3E5FC;
 }
 
 
@@ -84,6 +86,21 @@
 
 .table-row-cell, .tree-table-row-cell {
 	-fx-cell-size: 40px;
+}
+
+.table-row-cell:hover {
+   -fx-background-color: #B3E5FC; 
+
+}
+
+.table-row-cell:selected{
+    -fx-background-color: #03A9F4;
+
+}
+
+.table-row-cell:selected:hover{
+    -fx-background-color: #03A9F4;
+
 }
 
 .table-cell {
@@ -100,7 +117,7 @@
 	-fx-background-color: transparent;
 	-fx-background-radius: 2.0;
 	-fx-padding: 0.5em 0.5em 0.5em 0.1em;
-	-fx-border-color: lightblue;
+	-fx-border-color: #B3E5FC;
 	-fx-border-width: 0 0 2 0;
 	-fx-highlight-fill: rgb(94.0, 203.0, 234.0);
 }
@@ -135,17 +152,16 @@
  ******************************************************************************/
 .check-box {
 	-fx-padding: 10;
-
 }
 
 .check-box>.box, .check-box>.box.unfocused, .check-box:disabled>.box,
 	.check-box:indeterminate>.box {
 	-fx-border-radius: 4.0;
-	-fx-border-color: lightblue;
+	-fx-border-color: #B3E5FC;
 	-fx-border-width: 2;
 	-fx-background-radius: 4;
 	-fx-background-color: transparent;
-	-fx-padding: 1;
+
 }
 
 .check-box:selected>.box {
@@ -243,7 +259,7 @@
 .radio-button>.radio, .radio-button>.radio.unfocused, .radio-button:disabled>.radio,
 	.radio-button:selected>.radio {
 	-fx-border-radius: 100.0;
-	-fx-border-color: lightblue;
+	-fx-border-color: #B3E5FC;
 	-fx-border-width: 2;
 	-fx-background-radius: 100;
 	-fx-background-color: transparent;
