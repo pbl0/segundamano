@@ -100,6 +100,11 @@ public class ProductoDetalleViewController implements Initializable {
     
     public static final String CARPETA_FOTOS = "Fotos";
     
+    /**
+     * Metodo para limitar campos de texto
+     * @param textField
+     * @param limit
+     */
     public static void limitTextField(TextField textField, int limit) {
         UnaryOperator<TextFormatter.Change> textLimitFilter = change -> {
             if (change.isContentChange()) {
@@ -161,6 +166,7 @@ public class ProductoDetalleViewController implements Initializable {
         
         this.producto.setNombre(textFieldNombre.getText());
         this.producto.setFabricante(textFieldFabrica.getText());
+        // Precio
         if (!textFieldPrecio.getText().isEmpty()){
             try {
                 this.producto.setPrecio(BigDecimal.valueOf(Double.valueOf(textFieldPrecio.getText())));
@@ -171,6 +177,7 @@ public class ProductoDetalleViewController implements Initializable {
             textFieldPrecio.requestFocus();
             }
         }
+        // Envio
         if (!textFieldEnvio.getText().isEmpty()){
             try {
                 this.producto.setEnvio(BigDecimal.valueOf(Double.valueOf(textFieldEnvio.getText())));
@@ -183,8 +190,11 @@ public class ProductoDetalleViewController implements Initializable {
         }
         
         this.producto.setDescripcion(textAreaDesc.getText());
+        
+        // Checkbox
         this.producto.setEnvInt(checkBoxEnvInt.selectedProperty().get());
         
+        //radio
         if (radioButtonNuevo.isSelected()) {
             producto.setEstado(NUEVO);
         } else if (radioButtonCasi.isSelected()) {
@@ -195,6 +205,7 @@ public class ProductoDetalleViewController implements Initializable {
             producto.setEstado(ESTROPEADO);
         }
         
+        //Fecha
         if (datePickerFecha.getValue() != null) {
             LocalDate localDate = datePickerFecha.getValue();
             ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
@@ -205,6 +216,7 @@ public class ProductoDetalleViewController implements Initializable {
             producto.setFecha(null);
         }
         
+        // Combobox
         if(comboBoxVendedor.getValue() != null){
             producto.setUsuario(comboBoxVendedor.getValue());
         } else {
@@ -248,9 +260,10 @@ public class ProductoDetalleViewController implements Initializable {
             }
         }
     }
-
+    // Boton de cancelar
     @FXML
     private void onActionButtonCancelar(ActionEvent event) {
+        // rollback de la transacción
         entityManager.getTransaction().rollback();
         
         this.volverLista();
@@ -266,7 +279,7 @@ public class ProductoDetalleViewController implements Initializable {
 
         
     }
-    
+    // Boton examinar foto
     @FXML
     private void onActionButtonExaminar(ActionEvent event) {
         File carpetaFotos = new File(CARPETA_FOTOS);
@@ -295,9 +308,10 @@ public class ProductoDetalleViewController implements Initializable {
             }
         }
     }
-    
+    // Boton eliminar foto
     @FXML
     private void onActionSuprimirFoto(ActionEvent event) {
+        // confirmacion
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Confirmar supresión de imagen");
         alert.setHeaderText("¿Desea SUPRIMIR el archivo asociado a la imagen, \n"
@@ -312,6 +326,7 @@ public class ProductoDetalleViewController implements Initializable {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == buttonTypeEliminar){
+            // Borrar archivo
             String imageFileName = producto.getFoto();
             File file = new File(CARPETA_FOTOS + "/" + imageFileName);
             if(file.exists()) {
@@ -320,6 +335,7 @@ public class ProductoDetalleViewController implements Initializable {
             producto.setFoto(null);
             imageViewFoto.setImage(null);
         } else if (result.get() == buttonTypeMantener) {
+            // Mantener archivo
             producto.setFoto(null);
             imageViewFoto.setImage(null);
         } 
@@ -344,6 +360,7 @@ public class ProductoDetalleViewController implements Initializable {
         this.nuevoProducto = nuevoProducto;
     }
     
+    // Rellena formulario
     public void mostrarDatos() {
         textFieldNombre.setText(producto.getNombre());
         textFieldFabrica.setText(producto.getFabricante());

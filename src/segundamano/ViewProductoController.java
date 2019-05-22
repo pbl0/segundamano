@@ -78,6 +78,11 @@ public class ViewProductoController implements Initializable {
     public static final char USADO = 'U';
     public static final char ESTROPEADO = 'E';
     
+    /**
+     * Metodo para limitar campos de texto
+     * @param textField
+     * @param limit
+     */
     public static void limitTextField(TextField textField, int limit) {
         UnaryOperator<TextFormatter.Change> textLimitFilter = change -> {
             if (change.isContentChange()) {
@@ -102,6 +107,7 @@ public class ViewProductoController implements Initializable {
         // Limitamos numero de caracteres en cada campo de texto.
         limitTextField(textFieldNombre, 20);
         limitTextField(textFieldFabrica, 20);
+        
         // Rellenar los campos de la tabla
         columnNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columnFabrica.setCellValueFactory(new PropertyValueFactory<>("fabricante"));
@@ -190,9 +196,10 @@ public class ViewProductoController implements Initializable {
     @FXML
     private void onActionButtonGuardar(ActionEvent event) {  
         if (productoSeleccionado != null){
+            // Actualiza nombre y fabricante del objeto seleccionado
             productoSeleccionado.setNombre(textFieldNombre.getText());
             productoSeleccionado.setFabricante(textFieldFabrica.getText());
-            
+            // Actualizamos BD
             entityManager.getTransaction().begin();
             entityManager.merge(productoSeleccionado);
             entityManager.getTransaction().commit();

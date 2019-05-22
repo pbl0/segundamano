@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Tue May 21 10:22:59 CEST 2019:
- Iniciando instancia a816c00e-016a-d97c-8b8e-00000222dbb0 de Derby, versión The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): 
+Wed May 22 09:15:05 CEST 2019:
+ Iniciando instancia a816c00e-016a-de64-bd4a-000001f079a0 de Derby, versión The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): 
 en el directorio de base de datos C:\Users\PC15\Documents\NetBeansProjects\SegundaMano\DB con el cargador de clases sun.misc.Launcher$AppClassLoader@66d3c617
 Cargado desde file:/C:/Program%20Files/glassfish-4.1.1/javadb/lib/derby.jar
 java.vendor=Oracle Corporation
@@ -11,7 +11,7 @@ os.arch=amd64
 os.version=10.0
 derby.system.home=null
 Cargador de clases de base de datos iniciado - derby.database.classpath=''
-Tue May 21 10:24:20 CEST 2019 Thread[JavaFX Application Thread,5,main] Cleanup action starting
+Wed May 22 09:15:40 CEST 2019 Thread[JavaFX Application Thread,5,main] Cleanup action starting
 java.sql.SQLException: No se ha encontrado la base de datos '/BD'.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.newEmbedSQLException(Unknown Source)
